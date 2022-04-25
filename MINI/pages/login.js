@@ -27,7 +27,7 @@ export default function Login({ token }) {
               onChange={(e) => setPassword(e.target.value)}
               className={styles.input}
               placeholder="Password"></input>
-            <button className="p-2 bg-yellow-500 hover:text-indigo-500 rounded-br-lg rounded-tl-lg drop-shadow-lg" onClick={() => login()} > LOGIN </button>
+            <button className="p-2 bg-red-500 hover:text-indigo-500 rounded-br-lg rounded-tl-lg drop-shadow-lg" onClick={() => login()} > LOGIN </button>
           </div>
           <div
             style={{ marginBottom: "10px", marginTop: "30px"}}
