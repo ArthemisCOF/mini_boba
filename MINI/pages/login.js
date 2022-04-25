@@ -36,7 +36,7 @@ export default function Login({ token }) {
             <button className="p-2 bg-yellow-500 hover:text-indigo-500 rounded-br-lg rounded-tl-lg drop-shadow-lg" onClick={() => {
                 router.push("/register");
               }}
-              className="p-2 bg-yellow-500 hover:text-indigo-500 rounded-br-lg rounded-tl-lg drop-shadow-lg"> REGISTER </button>
+              > REGISTER </button>
           </div>
         </div>
       </li>
