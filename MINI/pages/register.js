@@ -17,7 +17,7 @@ export default function Register({ token }) {
     let result = await axios
       .post(
         `${config.URL}/register`,
-        { username, password, email, name, telephone },
+        { username, password, email, name,},
         { withCredentials: true }
       )
       .then((res) => {
@@ -54,11 +54,6 @@ export default function Register({ token }) {
           onChange={(e) => setName(e.target.value)}
           className={styles.input}
           placeholder="NAME">
-          </input>
-        <input
-          onChange={(e) => setTelephone(e.target.value)}
-          className={styles.input}
-          placeholder="PHONE NUNBER">
           </input>
         <button className="p-2 bg-yellow-500 hover:text-indigo-500 rounded-br-lg rounded-tl-lg drop-shadow-lg" onClick={() => register() }>REGISTER</button>
       </div>

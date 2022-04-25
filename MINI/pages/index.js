@@ -10,11 +10,10 @@ export default function Home() {
   return (
     <Layout>
       <div className={styles.homepage}>
-        <p className={styles.indexTitle}>WELCOME TO BATINELLI STORE</p>
-        <p className={styles.subtitle}>NEW COLLECTION HAS ARIVED</p>
+        <p className={styles.indexTitle}>WELCOME TO TEABAR</p>
         <button className={styles.indexButton} onClick={() => {
             router.push("/shop");
-          }}>New Collection</button>
+          }}>BEST SELLER</button>
       </div>
     </Layout>
   );

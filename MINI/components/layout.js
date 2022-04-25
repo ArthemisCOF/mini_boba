@@ -17,7 +17,7 @@ const Layout = (props) => {
           className={styles.mainmenu}
           onClick={() => {
             router.push("/shop");
-          }}>Our Product</button>
+          }}>Menu</button>
         <button
           className={styles.mainmenu}
           onClick={() => {
@@ -43,15 +43,15 @@ const Layout = (props) => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>BASTINELLI TACTICAL KNIFE CLUB</title>
+        <title>TEA CAFE</title>
       </Head>
-      <main className={styles.main} style={{backgroundImage: "https://t4.ftcdn.net/jpg/03/49/86/71/240_F_349867133_a2Upqgg99LIDvsGbR4Of3a0bXCwqzrAQ.jpg"}}>
+      <main className={styles.main} style={{backgroundImage: "https://i.pinimg.com/564x/2d/35/ea/2d35ea12d3db8c669b91cc12b597ada7.jpg"}}>
         <div className="row-justify-between" style={{ backgroundColor : '#181818' }}>
           <div className="rows" style ={{ color:'white', alignItems: 'center' }}>
-            <img className={styles.logo} src={"https://static.wixstatic.com/media/5a3fd2_d7ccbebfbaf943c8b49a49e3069cf85e~mv2.jpg/v1/fill/w_50,h_48,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/griffes%20hd.jpg"}></img>
+            <img className={styles.logo} src={"https://talkboba.com/wp-content/uploads/2019/11/mockup-95af4edc.png"}></img>
             <div className="flex" style={{ flexDirection: 'column', justifyContent: 'center' }}>
-              <h1  className={styles.title} >BASTINELLI TACTICAL </h1>
-              <small>KNIFE CLUB</small>
+              <h1  className={styles.title} >TEA CAFE </h1>
+              <small>BOBATEA CLUB</small>
             </div>
            
             

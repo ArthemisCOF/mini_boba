@@ -62,7 +62,7 @@
 .homepage {
   padding: 100px;
   height: 91.7vh;
-  background-image: url("https://static.wixstatic.com/media/5a3fd2_ec4d94e75a1445ff9962901f0d834add~mv2.jpg/v1/crop/x_249,y_0,w_1903,h_1700,q_90,enc_auto/5a3fd2_ec4d94e75a1445ff9962901f0d834add~mv2.jpg");
+  background-image: url("https://img.freepik.com/free-photo/seamless-pattern-illustration-cartoon-cute-ice-milk-tea-bubble-boba-cup-wallpaper-background_34056-739.jpg?w=1480");
   background-size: cover;
   width: 100vw;
 }
@@ -74,7 +74,7 @@
   font-size: 4rem;
   font-weight: 500;
   letter-spacing: 6px;
-  color: rgb(255, 255, 255);
+  color: rgb(242, 14, 7);
 }
 
 .subtitle {
@@ -90,13 +90,13 @@
 }
 
 .indexButton {
-  margin-left: 40.5vw;
+  margin-left: 35vw;
   margin-top: 3vh;
   padding: 0px 20px 0px 20px;
   font-size: 2rem;
   font-weight: 200;
   letter-spacing: 6px;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(100, 125, 255);
   font-family: Arial, Helvetica, sans-serif;
   color: rgb(0, 0, 0);
   cursor: pointer;

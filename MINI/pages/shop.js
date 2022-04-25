@@ -14,8 +14,8 @@ const Shop = ({ token }) => {
     setUserid(localStorage.getItem("userid"));
   });
   const productList = [
-    { id: "fixedblade", productName: "Bastinelli Creations Sin", price: 400 },
-   { id: "dagger", productName: "bastinelli M390", price: 350 },
+    { id: "thaitea", productName: "Thai-Milk tea", price: 2.99 },
+   { id: "taiwan", productName: "Taiwan-milk-Tea", price: 2.59 },
   
   ];
   const addtocart = async (item) => {
@@ -62,7 +62,7 @@ const Shop = ({ token }) => {
                     <p className={styles.productName}>{item.price}$</p>
                     <button
                       onClick={() => addtocart(item)}
-                      className={styles.addCartButton}>ADD PRODUCT IN CART</button>
+                      className={styles.addCartButton}>ADD Menu IN CART</button>
                   </div>
                 </div>
               );

@@ -70,13 +70,12 @@ const Cart = ({ token }) => {
   return (
     <Layout>
       <div>
-        <p className={styles.carttitle}>KNIFE CART</p>
+        <p className={styles.carttitle}>TEA CART</p>
         <div className="centers">
           <table className={styles.table}>
             <thead>
               <tr className={styles.tableHeader}>
                 <td>NAME</td>
-                <th>QUANTITY</th>
                 <th>PRICE</th>
                 <th>TOTAL</th>
                 <th>CHANGE</th>
