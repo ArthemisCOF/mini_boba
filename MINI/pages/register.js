@@ -13,21 +13,22 @@ export default function Register({ token }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [telephone, setTelephone] = useState("");
-  const register = async () => {
-    let result = await axios
-      .post(
-        `${config.URL}/register`,
-        { username, password, email, name,},
-        { withCredentials: true }
-      )
-      .then((res) => {
-        console.log(res);
-        router.push("/login");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  
+  const login = async (req, res) => {
+    try {
+        let result = await axios.post(`${config.URL}/login`,
+            { username, password },
+            { withCredentials: true })
+        console.log('result: ', result)
+        console.log('result.data:  ', result.data)
+        console.log('token:  ', token)
+        setStatus(result.status + ': ' + result.data.user.username)
+    }
+    catch (e) {
+        console.log('error: ', JSON.stringify(e.response))
+        setStatus(JSON.stringify(e.response).substring(0, 80) + "...")
+    }
+}
   return (
     <Layout>
       <li className="relative m-4 border-2 border-solid p-8 rounded-md bg-white drop-shadow-lg">
@@ -54,6 +55,11 @@ export default function Register({ token }) {
           onChange={(e) => setName(e.target.value)}
           className={styles.input}
           placeholder="NAME">
+          </input>
+        <input
+          onChange={(e) => setTelephone(e.target.value)}
+          className={styles.input}
+          placeholder="PHONE NUNBER">
           </input>
         <button className="p-2 bg-yellow-500 hover:text-indigo-500 rounded-br-lg rounded-tl-lg drop-shadow-lg" onClick={() => register() }>REGISTER</button>
       </div>
