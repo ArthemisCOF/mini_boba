@@ -1,192 +1,167 @@
-const express = require("express"),
-  app = express(),
-  passport = require("passport"),
-  port = process.env.PORT || 80,
-  cors = require("cors"),
-  cookie = require("cookie");
+const express = require('express'),
+    app = express(),
+    passport = require('passport'),
+    port = process.env.PORT || 8000,
+    cors = require('cors'),
+    cookie = require('cookie')
 
-const bcrypt = require("bcrypt");
-const e = require("express");
+const bcrypt = require('bcrypt')
 
-const db = require("./database.js");
-let users = db.users;
-let cart = db.cart;
+const db = require('./database.js')
+let users = db.users
 
-require("./passport.js");
+require('./passport.js')
 
-const router = require("express").Router(),
-  jwt = require("jsonwebtoken");
+const router = require('express').Router(),
+    jwt = require('jsonwebtoken')
 
-app.use("/api", router);
-router.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use('/api', router)
+router.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 // router.use(cors())
-router.use(express.json());
-router.use(express.urlencoded({ extended: false }));
+router.use(express.json())
+router.use(express.urlencoded({ extended: false }))
 
-router.post("/login", (req, res, next) => {
-  passport.authenticate("local", { session: false }, (err, user, info) => {
-    console.log("Login: ", req.body, user, err, info);
-    if (err) return next(err);
-    if (user) {
-      const token = jwt.sign(user, db.SECRET, {
-        expiresIn: "7d",
-      });
-      res.setHeader(
+
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', { session: false }, (err, user, info) => {
+        console.log('Login: ', req.body, user, err, info)
+        if (err) return next(err)
+        if (user) {
+            const token = jwt.sign(user, db.SECRET, {
+                expiresIn: '1d'
+            })
+            // req.cookie.token = token
+            res.setHeader(
+                "Set-Cookie",
+                cookie.serialize("token", token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV !== "development",
+                    maxAge: 60 * 60,
+                    sameSite: "strict",
+                    path: "/",
+                })
+            );
+            res.statusCode = 200
+            return res.json({ user, token })
+        } else
+            return res.status(422).json(info)
+    })(req, res, next)
+})
+router.get('/foo',(req, res,next)=>{
+    if(req.headers.authorization){
+        return res.json('Foo')
+    }
+    else{
+        return res.json('Unauthorized')
+    }
+    // console.log(req.headers.authorization)
+})
+router.get('/logout', (req, res) => { 
+    res.setHeader(
         "Set-Cookie",
-        cookie.serialize("token", token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV !== "development",
-          maxAge: 60 * 60,
-          sameSite: "strict",
-          path: "/",
+        cookie.serialize("token", '', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== "development",
+            maxAge: -1,
+            sameSite: "strict",
+            path: "/",
         })
-      );
-      res.statusCode = 200;
-      return res.json({ user, token });
-    } else return res.status(422).json(info);
-  })(req, res, next);
-});
-
-router.get("/logout", (req, res) => {
-  res.setHeader(
-    "Set-Cookie",
-    cookie.serialize("token", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== "development",
-      maxAge: -1,
-      sameSite: "strict",
-      path: "/",
-    })
-  );
-  res.statusCode = 200;
-  return res.json({ message: "Logout Success" });
-});
+    );
+    res.statusCode = 200
+    return res.json({ message: 'Logout successful' })
+})
 
 /* GET user profile. */
-router.get(
-  "/profile",
-  passport.authenticate("jwt", { session: false }),
-  (req, res, next) => {
-    res.send(req.user);
-  }
-);
+router.get('/profile',
+    passport.authenticate('jwt', { session: false }),
+    (req, res, next) => {
+        res.send(req.user)
+    });
 
-router.post("/register", async (req, res) => {
-  try {
-    const SALT_ROUND = 10;
-    const { username, email, password, name, telephone } = req.body;
-    if (!username || !email || !password || !name || !telephone)
-      return res.json({ message: "Can't Register By Empty String" });
-    if (db.checkExistingUser(username) !== db.NOT_FOUND)
-      return res.json({ message: "Duplicated User" });
+router.post('/register',
+    async (req, res) => {
+        try {
+            const SALT_ROUND = 10
+            const { username, email, password } = req.body 
+            if (!username || !email || !password)
+                return res.json( {message: "Cannot register with empty string"})
+            if (db.checkExistingUser(username) !== db.NOT_FOUND)
+                return res.json({ message: "Duplicated user" })
 
-    let id = users.users.length
-      ? users.users[users.users.length - 1].id + 1
-      : 1;
-    hash = await bcrypt.hash(password, SALT_ROUND);
-    users.users.push({ id, username, password: hash, email, name, telephone });
-    res.status(200).json({ message: "Register Success" });
-  } catch {
-    res.status(422).json({ message: "Can't Register" });
-  }
-});
-
-router.get("/cart", (req, res) => {
-  try {
-    console.log(req.headers.search);
-    let carts = cart.cart.filter((item) => item.userid == req.headers.search);
-    console.log(carts);
-    res.status(200).json({ message: "Get To Cart Success", data: carts });
-  } catch {
-    res.status(422).json({ message: "Can't Get to Cart" });
-  }
-});
-
-router.get("/deleteProduct", async (req, res) => {
-  try {
-    console.log("userid", req.headers.userid);
-    console.log("productName", req.headers.productname);
-    let inx = cart.cart.findIndex((item) => item.userid === req.headers.userid);
-    console.log("inx", inx);
-    if (inx !== -1) {
-      let idx = await cart.cart[inx].products.findIndex(
-        (item) => item.productName == req.headers.productname
-      );
-      console.log("idx", idx);
-      // delete cart.cart[inx].products[idx];
-      cart.cart[inx].products.splice(idx, 1);
-    }
-    console.log("inx", inx);
-    res.status(200).json({ message: "Delete Success" });
-  } catch {
-    res.status(422).json({ message: "Cannot Delete" });
-  }
-});
-
-router.post("/addtocart", async (req, res) => {
-  try {
-    const { userid, productName, quantity, price } = req.body;
-    if (db.checkExistingUidCart(userid) === db.NOT_FOUND) {
-      let id = cart.cart.length ? cart.cart[cart.cart.length - 1].id + 1 : 1;
-      console.log("1");
-      let products = [
-        {
-          productName: productName,
-          quantity: quantity,
-          price: price,
-        },
-      ];
-      cart.cart.push({ id, userid, products });
-    } else {
-      console.log("2");
-      let productObject = {
-        productName: productName,
-        quantity: quantity,
-        price: price,
-      };
-      cart.cart.map(async (item) => {
-        if (item.userid === userid) {
-          let isExisting = await item.products.filter(
-            (pd) => pd.productName == productName
-          );
-          console.log("isExisting", isExisting[0]);
-          if (isExisting[0] === undefined) {
-            console.log("3");
-            item.products.push(productObject);
-          } else {
-            console.log("4");
-            item.products.map((pd) => {
-              if (pd.productName === productName) {
-                pd.quantity = pd.quantity + quantity;
-              }
-            });
-          }
+            let id = (users.users.length) ? users.users[users.users.length - 1].id + 1 : 1
+            hash = await bcrypt.hash(password, SALT_ROUND)
+            users.users.push({ id, username, password: hash, email })
+            res.status(200).json({ message: "Register success" })
+        } catch {
+            res.status(422).json({ message: "Cannot register" })
         }
-      });
-    }
-    res.status(200).json({ message: "Add To Cart Success" });
-  } catch {
-    res.status(422).json({ message: "Cannot Add To Cart" });
-  }
+    })
+
+router.get('/alluser', (req,res) => res.json(db.users.users))
+
+router.get('/', (req, res, next) => {
+    res.send('Respond without authentication');
 });
-
-router.get("/alluser", (req, res) => res.json(db.users.users));
-
 router.get("/", (req, res, next) => {
-  res.send("Respond Without Authentication");
-});
+    res.send("Respond without authentication");
+  });
 
+  let laundry = {
+    list: [
+      { "id": 1, "CustomerID": "Super Mario Party", "name": "jamee", "surname": "boy", "status": "Rent 3 day", "price": 100 },
+      { "id": 2, "CustomerID": "Just Dancec 2020", "name": "natthawut", "surname": "sawaengjit", "status": "Rent 7 day", "price": 200}]
+  }
+  
+  router
+    .route("/rent")
+    .get((req, res) => {
+      res.send(laundry);
+    })
+    .post((req, res) => {
+      console.log(req.body);
+      let newCustomer = {};
+      newCustomer.id = laundry.list.length ? laundry.list[laundry.list.length - 1].id + 1 : 1;
+      newCustomer.CustomerID = req.body.CustomerID;
+      newCustomer.name = req.body.name;
+      newCustomer.surname = req.body.surname;
+      newCustomer.status = req.body.status;
+      newCustomer.price = req.body.price;
+      laundry = { list: [...laundry.list, newCustomer] };
+      res.json(laundry);
+    });
+  
+  router
+    .route("/rent/:customer_ID")
+    .get((req, res) => {
+      let id = laundry.list.findIndex((item) => +item.id == +req.params.customer_ID)
+      res.json(laundry.list[id]);
+    })
+    .put((req, res) => {
+      let id = laundry.list.findIndex((item) => item.id == +req.params.customer_ID);
+      laundry.list[id].CustomerID = req.body.CustomerID;
+      laundry.list[id].name = req.body.name;
+      laundry.list[id].surname = req.body.surname;
+      laundry.list[id].status = req.body.status;
+      laundry.list[id].price = req.body.price;
+      res.json(laundry.list);
+    })
+    .delete((req, res) => {
+      laundry.list = laundry.list.filter((item) => +item.id !== +req.params.customer_ID);
+      res.json(laundry.list);
+    });
+  
 // Error Handler
 app.use((err, req, res, next) => {
-  let statusCode = err.status || 500;
-  res.status(statusCode);
-  res.json({
-    error: {
-      status: statusCode,
-      message: err.message,
-    },
-  });
+    let statusCode = err.status || 500
+    res.status(statusCode);
+    res.json({
+        error: {
+            status: statusCode,
+            message: err.message,
+        }
+    });
 });
 
 // Start Server
-app.listen(port, () => console.log(`Server Is Running On Port ${port}`));
+app.listen(port, () => console.log(`Server is running on port ${port}`))
+
