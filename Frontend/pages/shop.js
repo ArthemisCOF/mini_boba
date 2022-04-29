@@ -16,6 +16,8 @@ const Shop = ({ token }) => {
   const productList = [
     { id: "thaitea", productName: "Thai-Milk tea", price: 2.99 },
    { id: "taiwan", productName: "Taiwan-milk-Tea", price: 2.59 },
+   {id: "ice-cocoa", productName: "Ice-Cocoa", price: 2.59},
+   {id: "icelatte", productName: "Ice-Latte", price: 3.29},
   
   ];
   const addtocart = async (item) => {
